@@ -1,0 +1,69 @@
+# ============================================================
+# OCP Screen Blockage Detection - Backend Spring Boot (Phase 3)
+# ============================================================
+
+spring:
+  application:
+    name: ocp-screen-blockage-backend
+
+  datasource:
+    # URL configurable via POSTGRES_URL (defaut: instance locale de test).
+    url: ${POSTGRES_URL:jdbc:postgresql://127.0.0.1:5433/ocp_blockage}
+    username: ${POSTGRES_USER:postgres}
+    # Mot de passe via variable d'environnement, jamais en dur dans le code Java.
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # Prototype dev uniquement : creation/mise a jour automatique des tables.
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 20MB
+
+server:
+  port: 8080
+
+# ============================================================
+# Configuration du microservice IA (ai-service Python/FastAPI)
+# L'URL NE DOIT PAS etre codee en dur dans les classes Java.
+# ============================================================
+ai-service:
+  base-url: ${AI_SERVICE_BASE_URL:http://127.0.0.1:8000}
+  analyze-path: /analyze
+  connect-timeout-ms: 5000
+  read-timeout-ms: 30000
+
+# ============================================================
+# Phase 4 - Regles metier : moteur de decision
+# Toutes les valeurs sont externalisees ici (@ConfigurationProperties) :
+# AUCUN seuil metier n'est code en dur dans les services Java.
+# Modifier ces valeurs change le comportement sans recompilation.
+# ============================================================
+
+# Cadence de capture des frames. Miroir de ai-service/config/config.yaml
+# (capture_interval_seconds: 30) : sert a dimensionner la capacite maximale
+# du buffer glissant (300 s / 30 s => ~10 echantillons possibles).
+capture:
+  interval-seconds: 30
+
+decision:
+  # Seuils de blocage en % (valeurs indicatives de la roadmap, a ajuster
+  # avec des experts industriels). Une frame "depasse" un seuil si son
+  # pourcentage de blocage est strictement superieur au seuil.
+  warning-blockage-percentage: 25
+  critical-blockage-percentage: 50
+  # Fenetre glissante ET duree minimale de maintien de la condition
+  # critique pour declencher CRITICAL (secondes). CRITICAL n'est JAMAIS
+  # declenche sur une seule frame.
+  persistence-window-seconds: 300
+  # Part minimale des frames de la fenetre devant depasser le seuil
+  # WARNING pour declarer l'etat WARNING (0.5 = 50% des frames).
+  warning-min-frames-ratio: 0.5

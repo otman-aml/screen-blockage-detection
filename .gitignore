@@ -1,0 +1,51 @@
+# ============================================================
+# OCP Screen Blockage Detection - Git ignore
+# ============================================================
+
+# Python (ai-service)
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+runs/
+
+# Poids de modèles : seul le modèle livré est versionné
+*.pt
+!ai-service/yolov8n-seg.pt
+
+# Java / Maven (backend)
+target/
+*.class
+*.jar
+!**/.mvn/wrapper/maven-wrapper.jar
+*.log
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Node / Angular (frontend)
+node_modules/
+dist/
+.angular/
+out-tsc/
+coverage/
+*.tsbuildinfo
+
+# Environnement / secrets
+.env
+*.env

@@ -1,0 +1,80 @@
+﻿[
+    {
+        "file":  "image_001.jpg",
+        "bytes":  128253,
+        "http":  "200",
+        "imageWidth":  640,
+        "imageHeight":  640,
+        "numberOfDetections":  81,
+        "blockagePercentage":  92.23,
+        "oversizedRocks":  81,
+        "avgConfidence":  0.8797,
+        "firstClass":  null,
+        "masksPoints":  141
+    },
+    {
+        "file":  "image_002.jpg",
+        "bytes":  127399,
+        "http":  "200",
+        "imageWidth":  640,
+        "imageHeight":  640,
+        "numberOfDetections":  78,
+        "blockagePercentage":  91.94,
+        "oversizedRocks":  78,
+        "avgConfidence":  0.888,
+        "firstClass":  null,
+        "masksPoints":  135
+    },
+    {
+        "file":  "image_003.jpg",
+        "bytes":  47893,
+        "http":  "200",
+        "imageWidth":  640,
+        "imageHeight":  640,
+        "numberOfDetections":  65,
+        "blockagePercentage":  59.22,
+        "oversizedRocks":  65,
+        "avgConfidence":  0.7847,
+        "firstClass":  null,
+        "masksPoints":  210
+    },
+    {
+        "file":  "image_004.jpg",
+        "bytes":  45963,
+        "http":  "200",
+        "imageWidth":  512,
+        "imageHeight":  512,
+        "numberOfDetections":  78,
+        "blockagePercentage":  90.51,
+        "oversizedRocks":  76,
+        "avgConfidence":  0.9149,
+        "firstClass":  null,
+        "masksPoints":  123
+    },
+    {
+        "file":  "image_005.jpg",
+        "bytes":  66758,
+        "http":  "200",
+        "imageWidth":  512,
+        "imageHeight":  512,
+        "numberOfDetections":  52,
+        "blockagePercentage":  94.72,
+        "oversizedRocks":  52,
+        "avgConfidence":  0.9264,
+        "firstClass":  null,
+        "masksPoints":  244
+    },
+    {
+        "file":  "image_006.jpg",
+        "bytes":  59998,
+        "http":  "200",
+        "imageWidth":  512,
+        "imageHeight":  512,
+        "numberOfDetections":  105,
+        "blockagePercentage":  94.42,
+        "oversizedRocks":  103,
+        "avgConfidence":  0.8801,
+        "firstClass":  null,
+        "masksPoints":  118
+    }
+]

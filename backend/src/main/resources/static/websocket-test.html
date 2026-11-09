@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCP - WebSocket Test (Phase 5)</title>
+    <!-- SockJS client (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <!-- STOMP over SockJS (CDN) : expose globalement 'Stomp' -->
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 24px; background: #f7f7f7; }
+        h1 { font-size: 1.4em; }
+        .box { background: #fff; border: 1px solid #ddd; border-radius: 8px;
+               padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .status { font-weight: bold; font-size: 1.3em; }
+        .ok    { color: #1a7f37; }   /* NORMAL */
+        .warn  { color: #b08300; }   /* WARNING */
+        .crit  { color: #b3261e; }   /* CRITICAL */
+        #log { font-family: monospace; white-space: pre-wrap; max-height: 420px;
+                overflow-y: auto; background: #1e1e1e; color: #d4d4d4; padding: 12px;
+                border-radius: 6px; }
+        .muted { color: #888; }
+    </style>
+</head>
+<body>
+<h1>OCP Screen Blockage — WebSocket Test (Phase 5)</h1>
+
+<div class="box">
+    <div>Connection :</div>
+    <div id="conn" class="muted">CONNECTING…</div>
+</div>
+
+<div class="box">
+    <div>Dernier message reçu (<span class="muted">1 message par changement d’état</span>) :</div>
+    <pre id="last">—</pre>
+</div>
+
+<div class="box">
+    <div>Historique des messages :</div>
+    <div id="log"></div>
+</div>
+
+<script>
+    // --- configuration (endpoint + topic, identiques à application.yml) ---
+    const WS_URL   = "/ws";                 // endpoint SockJS du backend
+    const TOPIC    = "/topic/status";       // topic d'abonnement
+
+    const connEl = document.getElementById("conn");
+    const logEl  = document.getElementById("log");
+    const lastEl = document.getElementById("last");
+
+    function addLog(msg) {
+        const ts = new Date().toLocaleTimeString();
+        const line = "[" + ts + "] " + msg;
+        logEl.textContent += line + "\n";
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setConn(text, cls) {
+        connEl.textContent = text;
+        connEl.className = "status " + (cls || "muted");
+    }
+
+    function applyStatus(status) {
+        cls = status === "NORMAL" ? "ok" : status === "WARNING" ? "warn" : "crit";
+        setConn("CONNECTED — statut : " + status, cls);
+    }
+
+    addLog("Initialisation SockJS(" + WS_URL + ") …");
+
+    // --- connexion SockJS + abonnement STOMP ---
+    const socket  = new SockJS(WS_URL);
+    const stomp   = Stomp.over(socket);
+
+    stomp.connect({}, function (frame) {
+        addLog("STOMP CONNECTED : " + frame);
+        setConn("CONNECTED", "ok");
+        addLog("Abonnement au topic " + TOPIC + " …");
+
+        stomp.subscribe(TOPIC, function (message) {
+            // Le message arrive JSON :
+            // { "status": "...", "blockagePercentage": ..., "timestamp": "..." }
+            const data = JSON.parse(message.body);
+            lastEl.textContent = JSON.stringify(data, null, 2);
+            applyStatus(data.status);
+            addLog("RECU : " + data.status + "  blockage=" + data.blockagePercentage + "%");
+        });
+    }, function (err) {
+        addLog("ERREUR CONNEXION : " + JSON.stringify(err));
+        setConn("ERREUR DE CONNEXION", "crit");
+    });
+</script>
+</body>
+</html>

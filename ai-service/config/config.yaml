@@ -1,0 +1,59 @@
+# ============================================================
+# config.yaml — OCP Screen Blockage Detection — Phase 1
+# Genere automatiquement le 2026-08-26 14:57
+# ============================================================
+# TOUTES les valeurs ci-dessous (sauf mention contraire) sont des HYPOTHESES
+# D'INGENIERIE ACADEMIQUE, basees sur des ordres de grandeur usuels pour ce type
+# d'equipement industriel (cribles vibrants de traitement de minerai) — ce ne
+# sont PAS des mesures effectuees sur l'installation OCP reelle.
+# A valider avec les equipes OCP avant tout deploiement.
+
+# --- Equipement industriel : crible vibrant (dimensions PHYSIQUES totales) ---
+# Sert de contexte, n'entre pas dans le calcul de cm_per_pixel (voir
+# camera_zone_visible, qui ne couvre qu'une portion de cette surface).
+crible_dimensions:
+  largeur_m: 1.8
+  longueur_m: 4.5
+  ouverture_maille_mm: 10
+  source: "ordre de grandeur usuel secteur minier — non confirme par fiche technique OCP"
+
+# --- Camera industrielle : zone effectivement couverte par le capteur ---
+# Une camera fixe ne peut pas couvrir tout le crible avec une resolution
+# suffisante pour detecter des roches individuelles -> positionnee sur la
+# zone de sortie/accumulation, pas le crible entier.
+camera_zone_visible:
+  hauteur_camera_m: 3.0
+  largeur_m: 2.0
+  hauteur_m: 1.125
+  position: "zone de sortie/accumulation du crible, pas le crible entier"
+
+# --- Camera : specifications supposees ---
+camera_specs:
+  resolution_px: [1920, 1080]
+  type_suppose: "camera industrielle fixe, boitier IP66/IP67, eclairage LED integre"
+  note: "aucune fiche technique de camera reelle disponible a ce stade du projet"
+
+# --- Calibration : derivee par geometrie de projection (PAS une mesure physique) ---
+calibration:
+  cm_per_pixel: 0.10417
+  methode: "calcul geometrique a partir de camera_zone_visible et camera_specs.resolution_px — PAS une mesure physique (ex: regle/mire filmee par la camera reelle)"
+  valide_sur_site_ocp: false
+  mesure_physique_realisee: false
+
+# --- Seuils metier (regles de decision, Phase 4) ---
+seuils_metier:
+  seuil_roche_surdimensionnee_mm: 20
+  
+
+# --- Frequence de capture (coherente avec la fenetre de persistance Phase 4) ---
+capture_interval_seconds: 30
+
+# --- Hypotheses de stabilite environnementale ---
+environnement_hypotheses:
+  lumiere_camera_stables: true
+  poussiere_humidite_impact: "non evalue"
+
+# --- Modele IA associe a cette configuration ---
+
+modele:
+  fichier: "yolov8n-seg.pt"
